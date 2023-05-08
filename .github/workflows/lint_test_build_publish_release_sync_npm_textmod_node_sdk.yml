@@ -27,14 +27,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Get Current Version
         run: |
           VERSION=$(node -p "require('./package.json').version")
           echo "::set-env name=VERSION::$VERSION"
-
-      - name: Checkout code
-        uses: actions/checkout@v3
 
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
