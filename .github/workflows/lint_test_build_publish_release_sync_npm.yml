@@ -1,0 +1,100 @@
+name: Node.js Build and Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Select the version to publish'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+env:
+  PACKAGE_NAME: 'textmod-sdk'
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+jobs:
+  build_and_publish:
+    strategy:
+      matrix:
+        node-version: [14, 16, 18, 20]
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Get Current Version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "::set-env name=VERSION::$VERSION"
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint code
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test -- --coverage --coverageReporters=lcov --coverageReporters=text-lcov
+
+      - name: Build artifact
+        run: npm run build
+
+      - name: Bump Version
+        id: bump_version
+        run: |
+          npm install --save-dev semver
+          NEW_VERSION=$(node -e "const semver = require('semver'); console.log(semver.inc('${{ env.PREVIOUS_VERSION }}', '${{ github.event.inputs.version }}'))")
+          echo "::set-output name=new_version::$NEW_VERSION"
+        env:
+          PREVIOUS_VERSION: ${{ env.VERSION }}
+
+      - name: Tag Release
+        id: tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a v${{ env.VERSION }} -m "Version v${{ env.VERSION }}"
+          echo "::set-output name=tag::v${{ env.VERSION }}"
+        env:
+          VERSION: ${{ steps.bump_version.outputs.new_version }}
+
+      - name: Publish to GitHub Packages - Setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://npm.pkg.github.com'
+        env:
+          NODE_AUTH_TOKEN: ${{ env.GITHUB_TOKEN }}
+
+      - name: Publish to GitHub Packages - Run
+        run: npm publish --access public
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          release_name: Release ${{ steps.tag.outputs.tag }}
+          body: Release ${{ steps.tag.outputs.tag }}
+          draft: false
+          prerelease: false
+
+      # - name: Sync with NPM
+      #   uses: JS-DevTools/npm-publish@v2
+      #   with:
+      #     token: ${{ env.NPM_TOKEN }}
