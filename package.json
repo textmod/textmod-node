@@ -44,6 +44,7 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
+    "posttest": "codecov",
     "lint": "eslint . --ext .ts"
   },
   "files": [
