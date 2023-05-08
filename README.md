@@ -1,5 +1,8 @@
 # TextMod SDK for Node.js
 
+[![codecov](https://codecov.io/gh/textmod/textmod-node/branch/master/graph/badge.svg?token=USRUTFK5KE)](https://codecov.io/gh/textmod/textmod-node)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 This is an SDK for the [TextMod API](https://textmod.xyz/) that allows you to easily moderate text content for various sentiments such as spam, hate, and pornography.
 
 ## Installation
