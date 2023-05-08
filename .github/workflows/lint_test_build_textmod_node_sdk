@@ -1,0 +1,43 @@
+name: lint_test_build_textmod_node_sdk
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+env:
+  PACKAGE_NAME: textmod-sdk
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  TEXTMOD_AUTH_TOKEN: ${{ secrets.TEXTMOD_AUTH_TOKEN }}
+
+jobs:
+  build-and-test:
+    strategy:
+      matrix:
+        node-version: [14, 16, 18, 20]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint code
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build artifact
+        run: npm run build
