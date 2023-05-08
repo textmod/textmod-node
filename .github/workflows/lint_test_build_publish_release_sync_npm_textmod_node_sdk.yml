@@ -1,4 +1,4 @@
-name: Node.js Build and Publish
+name: lint_test_build_publish_release_sync_npm_textmod_node_sdk
 
 on:
   workflow_dispatch:
