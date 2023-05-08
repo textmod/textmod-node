@@ -37,7 +37,7 @@ jobs:
         run: npm run lint
 
       - name: Run tests
-        run: npm test
+        run: npm test -- --coverage --coverageReporters=lcov --coverageReporters=text-lcov
 
       - name: Build artifact
         run: npm run build
