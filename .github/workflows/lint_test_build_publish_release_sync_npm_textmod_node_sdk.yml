@@ -14,7 +14,7 @@ on:
           - major
 
 env:
-  PACKAGE_NAME: 'textmod-sdk'
+  PACKAGE_NAME: 'textmod-node'
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -81,7 +81,7 @@ jobs:
       - name: Publish to GitHub Packages
         run: |
           cat  /home/runner/work/_temp/.npmrc
-          npm publish
+          npm publish --access public --@textmod:registry=https://npm.pkg.github.com/
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
