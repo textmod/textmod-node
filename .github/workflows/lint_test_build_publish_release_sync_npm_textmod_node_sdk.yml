@@ -73,13 +73,14 @@ jobs:
         env:
           VERSION: ${{ steps.bump_version.outputs.new_version }}
 
-      - name: Publish to GitHub Packages - Setup
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          registry-url: 'https://npm.pkg.github.com'
+      - name: Publish to GitHub Packages
+        run: |
+            echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
+            npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ env.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
       - name: Publish to GitHub Packages - Run
         run: npm publish --access public
