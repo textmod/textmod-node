@@ -75,12 +75,12 @@ jobs:
 
       - name: Publish to GitHub Packages
         run: |
-            echo "//npm.pkg.github.com/:_authToken=${{ env.GITHUB_TOKEN }}" >> .npmrc
-            npm publish
+          echo "@${{ github.repository_owner }}:registry=https://npm.pkg.github.com" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ env.GITHUB_TOKEN }}" >> .npmrc
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ env.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ env.GITHUB_TOKEN }}
-
 
       - name: Publish to GitHub Packages - Run
         run: npm publish --access public
