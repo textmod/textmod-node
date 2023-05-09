@@ -55,7 +55,7 @@ jobs:
         run: npm run build
 
 
-  version_package_publish_release_sync_npm:
+  version_package_publish_release:
 
     runs-on: ubuntu-latest
     needs: lint_test_build
@@ -78,7 +78,7 @@ jobs:
 
       - name: Bump version
         run: |
-          (npm version patch --no-git-tag-version)
+          npm version patch --no-git-tag-version
           echo "VERSION=$(npm version | sed 's/.* //' | sed 's/.$//')" >> $GITHUB_ENV
 
       - name: Create commit
