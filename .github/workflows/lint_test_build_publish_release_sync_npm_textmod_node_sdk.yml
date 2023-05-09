@@ -41,6 +41,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@textmod'
+        env:
+            NODE_AUTH_TOKEN: ${{ env.GITHUB_TOKEN }}
 
       - name: Install dependencies
         run: npm install
@@ -74,14 +78,7 @@ jobs:
           VERSION: ${{ steps.bump_version.outputs.new_version }}
 
       - name: Publish to GitHub Packages
-        run: |
-          echo "@${{ github.repository_owner }}:registry=https://npm.pkg.github.com" > .npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ env.GITHUB_TOKEN }}" >> .npmrc
-          npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ env.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ env.GITHUB_TOKEN }}
-
+        run: npm publish --access public
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
