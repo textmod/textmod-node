@@ -1,6 +1,10 @@
 name: lint_test_build_publish_release_sync_npm_textmod_node_sdk
 
 on:
+  workflow_run:
+    workflows: ["lint_test_build_publish_release_sync_npm_textmod_node_sdk"]
+    types:
+      - completed
   workflow_dispatch:
     inputs:
       version:
@@ -13,6 +17,7 @@ on:
           - minor
           - major
 
+
 env:
   PACKAGE_NAME: 'textmod-node'
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -21,7 +26,7 @@ env:
   TEXTMOD_AUTH_TOKEN: ${{ secrets.TEXTMOD_AUTH_TOKEN }}
 
 jobs:
-  build_and_publish:
+  lint_test_build:
     strategy:
       matrix:
         node-version: [14, 16, 18, 20]
@@ -59,41 +64,42 @@ jobs:
       - name: Build artifact
         run: npm run build
 
-      - name: Bump Version
-        id: bump_version
-        run: |
-          npm install --save-dev semver
-          NEW_VERSION=$(node -e "const semver = require('semver'); console.log(semver.inc('${{ env.PREVIOUS_VERSION }}', '${{ github.event.inputs.version }}'))")
-          echo "::set-output name=new_version::$NEW_VERSION"
-        env:
-          PREVIOUS_VERSION: ${{ env.VERSION }}
 
-      - name: Tag Release
-        id: tag
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git tag -a v${{ env.VERSION }} -m "Version v${{ env.VERSION }}"
-          echo "::set-output name=tag::v${{ env.VERSION }}"
-        env:
-          VERSION: ${{ steps.bump_version.outputs.new_version }}
+      # - name: Bump Version
+      #   id: bump_version
+      #   run: |
+      #     npm install --save-dev semver
+      #     NEW_VERSION=$(node -e "const semver = require('semver'); console.log(semver.inc('${{ env.PREVIOUS_VERSION }}', '${{ github.event.inputs.version }}'))")
+      #     echo "::set-output name=new_version::$NEW_VERSION"
+      #   env:
+      #     PREVIOUS_VERSION: ${{ env.VERSION }}
 
-      - name: Publish to GitHub Packages
-        run: |
-          npm publish --access public --@textmod:registry=https://npm.pkg.github.com/
+      # - name: Tag Release
+      #   id: tag
+      #   run: |
+      #     git config --local user.email "action@github.com"
+      #     git config --local user.name "GitHub Action"
+      #     git tag -a v${{ env.VERSION }} -m "Version v${{ env.VERSION }}"
+      #     echo "::set-output name=tag::v${{ env.VERSION }}"
+      #   env:
+      #     VERSION: ${{ steps.bump_version.outputs.new_version }}
 
-      - name: Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.tag.outputs.tag }}
-          release_name: Release ${{ steps.tag.outputs.tag }}
-          body: Release ${{ steps.tag.outputs.tag }}
-          draft: false
-          prerelease: false
+      # - name: Publish to GitHub Packages
+      #   run: |
+      #     npm publish --access public --@textmod:registry=https://npm.pkg.github.com/
 
-      # - name: Sync with NPM
-      #   uses: JS-DevTools/npm-publish@v2
+      # - name: Create GitHub Release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
       #   with:
-      #     token: ${{ env.NPM_TOKEN }}
+      #     tag_name: ${{ steps.tag.outputs.tag }}
+      #     release_name: Release ${{ steps.tag.outputs.tag }}
+      #     body: Release ${{ steps.tag.outputs.tag }}
+      #     draft: false
+      #     prerelease: false
+
+      # # - name: Sync with NPM
+      # #   uses: JS-DevTools/npm-publish@v2
+      # #   with:
+      # #     token: ${{ env.NPM_TOKEN }}
