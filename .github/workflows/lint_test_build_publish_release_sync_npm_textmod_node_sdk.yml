@@ -95,7 +95,7 @@ jobs:
 
       - name: Create tag
         env:
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ env.GH_PAT }}
         run: |
           git tag $VERSION || (git tag -d $VERSION && exit 1)
           git push origin $VERSION || (git push --delete origin $VERSION && exit 1)
@@ -108,7 +108,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ env.GH_PAT }}
         with:
           tag_name: $VERSION
           release_name: Release $VERSION
@@ -126,7 +126,7 @@ jobs:
       - name: Error handling
         if: ${{ failure() }}
         env:
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ env.GH_PAT }}
         run: |
           echo "An error occurred"
           git reset HEAD~1
