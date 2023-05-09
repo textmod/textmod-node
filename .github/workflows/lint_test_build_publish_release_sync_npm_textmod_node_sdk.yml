@@ -42,6 +42,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://npm.pkg.github.com'
+          always-auth: true
           scope: '@textmod'
         env:
             NODE_AUTH_TOKEN: ${{ env.GITHUB_TOKEN }}
