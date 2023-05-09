@@ -88,12 +88,16 @@ jobs:
           echo "VERSION=$VERSION >> $GITHUB_ENV"
 
       - name: Create commit
+        env:
+          VERSION: ${{ env.VERSION }}
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "GitHub Actions"
           git commit -am "Bump version to $VERSION" || (git reset HEAD~1 && exit 1)
 
       - name: Create tag
+        env:
+          VERSION: ${{ env.VERSION }}
         run: |
           git tag $VERSION || (git tag -d $VERSION && exit 1)
           git push origin $VERSION || (git push --delete origin $VERSION && exit 1)
@@ -116,7 +120,7 @@ jobs:
       - name: Error handling
         if: ${{ failure() }}
         env:
-          GITHUB_TOKEN: ${{ env.GH_PAT }}
+          VERSION: ${{ env.VERSION }}
         run: |
           echo "An error occurred"
           git reset HEAD~1
