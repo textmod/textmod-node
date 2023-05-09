@@ -78,7 +78,7 @@ jobs:
 
       - name: Bump version
         run: |
-          npm version patch --no-git-tag-version
+          (npm version patch --no-git-tag-version)
           echo "VERSION=$(npm version | sed 's/.* //' | sed 's/.$//')" >> $GITHUB_ENV
 
       - name: Create commit
