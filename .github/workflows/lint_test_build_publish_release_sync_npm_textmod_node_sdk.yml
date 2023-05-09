@@ -65,6 +65,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          token: ${{ env.GH_PAT }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -86,16 +89,12 @@ jobs:
           echo "VERSION=$VERSION >> $GITHUB_ENV"
 
       - name: Create commit
-        env:
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "GitHub Actions"
           git commit -am "Bump version to $VERSION" || (git reset HEAD~1 && exit 1)
 
       - name: Create tag
-        env:
-          GITHUB_TOKEN: ${{ env.GH_PAT }}
         run: |
           git tag $VERSION || (git tag -d $VERSION && exit 1)
           git push origin $VERSION || (git push --delete origin $VERSION && exit 1)
@@ -107,8 +106,6 @@ jobs:
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ env.GH_PAT }}
         with:
           tag_name: $VERSION
           release_name: Release $VERSION
