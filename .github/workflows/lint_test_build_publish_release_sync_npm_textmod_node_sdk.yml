@@ -82,6 +82,7 @@ jobs:
         run: |
           echo "@${{ github.repository_owner }}:registry=https://npm.pkg.github.com" > .npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
+          cat .npmrc
           npm publish
 
       - name: Create GitHub Release
