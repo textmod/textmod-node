@@ -92,6 +92,8 @@ jobs:
           git commit -am "Bump version to $VERSION" || (git reset HEAD~1 && exit 1)
 
       - name: Create tag
+        env:
+          GITHUB_TOKEN: ${{ env.GH_PAT }}
         run: |
           git tag $VERSION || (git tag -d $VERSION && exit 1)
           git push origin $VERSION || (git push --delete origin $VERSION && exit 1)
@@ -121,6 +123,8 @@ jobs:
 
       - name: Error handling
         if: ${{ failure() }}
+        env:
+          GITHUB_TOKEN: ${{ env.GH_PAT }}
         run: |
           echo "An error occurred"
           git reset HEAD~1
