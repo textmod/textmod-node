@@ -78,7 +78,7 @@ jobs:
           VERSION: ${{ steps.bump_version.outputs.new_version }}
 
       - name: Publish to GitHub Packages
-        run: npm publish --access public
+        run: npm publish
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
