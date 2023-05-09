@@ -80,8 +80,6 @@ jobs:
 
       - name: Publish to GitHub Packages
         run: |
-          echo "@${{ github.repository_owner }}:registry=https://npm.pkg.github.com" >  /home/runner/work/_temp/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >>  /home/runner/work/_temp/.npmrc
           cat  /home/runner/work/_temp/.npmrc
           npm publish
 
