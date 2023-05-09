@@ -118,6 +118,8 @@ jobs:
         with:
           registry: 'https://registry.npmjs.org'
           token: ${{ env.NPM_TOKEN }}
+          access: 'public'
+          package: $PACKAGE_NAME
 
       - name: Error handling
         if: ${{ failure() }}
