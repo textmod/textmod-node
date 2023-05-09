@@ -82,8 +82,6 @@ jobs:
           NODE_AUTH_TOKEN: ${{ env.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ env.GITHUB_TOKEN }}
 
-      - name: Publish to GitHub Packages - Run
-        run: npm publish --access public
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
