@@ -81,6 +81,7 @@ jobs:
       - name: Publish to GitHub Packages
         run: |
           cat  /home/runner/work/_temp/.npmrc
+          npm login --registry=https://npm.pkg.github.com --scope=@textmod --always-auth=true --auth=$GITHUB_TOKEN
           npm publish
 
       - name: Create GitHub Release
