@@ -80,7 +80,6 @@ jobs:
 
       - name: Publish to GitHub Packages
         run: |
-          cat  /home/runner/work/_temp/.npmrc
           npm publish --access public --@textmod:registry=https://npm.pkg.github.com/
 
       - name: Create GitHub Release
