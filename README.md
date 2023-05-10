@@ -18,7 +18,7 @@ To use the TextMod SDK, you'll need an API authentication token from the [TextMo
 Once you have that, you can create an instance of the TextMod class:
 
 ```javascript
-import { TextMod } from 'textmod-sdk';
+import { TextMod } from '@textmod/textmod-node';
 
 const textmod = new TextMod({
   authToken: '<YOUR_AUTH_TOKEN>',
