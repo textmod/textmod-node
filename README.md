@@ -8,7 +8,7 @@ This is an SDK for the [TextMod API](https://textmod.xyz/) that allows you to ea
 ## Installation
 
 ```bash
-npm install textmod-sdk
+npm install @textmod/textmod-node
 ```
 
 
