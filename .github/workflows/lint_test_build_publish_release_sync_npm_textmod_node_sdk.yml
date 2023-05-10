@@ -88,19 +88,16 @@ jobs:
           echo "VERSION=$VERSION >> $GITHUB_ENV"
 
       - name: Create commit
-        env:
-          VERSION: ${{ env.VERSION }}
         run: |
+          echo ${{ env.VERSION }}
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "GitHub Actions"
-          git commit -am "Bump version to $VERSION" || (git reset HEAD~1 && exit 1)
+          git commit -am "Bump version to ${{ env.VERSION }} || (git reset HEAD~1 && exit 1)
 
       - name: Create tag
-        env:
-          VERSION: ${{ env.VERSION }}
         run: |
-          git tag $VERSION || (git tag -d $VERSION && exit 1)
-          git push origin $VERSION || (git push --delete origin $VERSION && exit 1)
+          git tag ${{ env.VERSION }} || (git tag -d ${{ env.VERSION }} && exit 1)
+          git push origin ${{ env.VERSION }} || (git push --delete origin ${{ env.VERSION }} && exit 1)
 
       - name: Publish to GitHub Packages
         run: |
@@ -118,13 +115,11 @@ jobs:
 
       - name: Error handling
         if: ${{ failure() }}
-        env:
-          VERSION: ${{ env.VERSION }}
         run: |
           echo "An error occurred"
           git reset HEAD~1
-          git tag -d $VERSION
-          git push --delete origin $VERSION
-          npm unpublish @textmod/$PACKAGE_NAME@$VERSION --registry=https://npm.pkg.github.com/
-          npm unpublish @textmod/$PACKAGE_NAME@$VERSION --registry=https://registry.npmjs.org/ --force --token $NPM_TOKEN
+          git tag -d ${{ env.VERSION }}
+          git push --delete origin ${{ env.VERSION }}
+          npm unpublish @textmod/$PACKAGE_NAME@${{ env.VERSION }} --registry=https://npm.pkg.github.com/
+          npm unpublish @textmod/$PACKAGE_NAME@${{ env.VERSION }} --registry=https://registry.npmjs.org/ --force --token $NPM_TOKEN
           exit 1
