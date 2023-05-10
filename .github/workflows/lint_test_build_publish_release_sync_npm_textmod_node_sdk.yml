@@ -81,6 +81,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Build artifact
+        run: npm run build
+
       - name: Bump version
         run: |
           npm version patch --no-git-tag-version
